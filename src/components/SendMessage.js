@@ -5,6 +5,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 const SendMessage = ({ scroll }) => {
   const [message, setMessage] = useState("");
 
+  //Handling sending messages
   const sendMessage = async (event) => {
     event.preventDefault();
     if (message.trim() === "") {
@@ -12,6 +13,9 @@ const SendMessage = ({ scroll }) => {
       return;
     }
     const { uid, displayName, photoURL } = auth.currentUser;
+
+
+    //Add the message to the collection in Firebase
     await addDoc(collection(db, "messages"), {
       text: message,
       name: displayName,
@@ -19,9 +23,13 @@ const SendMessage = ({ scroll }) => {
       createdAt: serverTimestamp(),
       uid,
     });
+
+  //Clear the message field
     setMessage("");
+    //Scroll to the bottom of the chat window
     scroll.current.scrollIntoView({ behavior: "smooth" });
   };
+  //Render the send message form
   return (
     <form onSubmit={(event) => sendMessage(event)} className="send-message">
       <label htmlFor="messageInput" hidden>
